@@ -13,18 +13,30 @@ import MenuItem from "@mui/material/MenuItem";
 import { RemoveRedEye as Eye } from "@mui/icons-material";
 import { Divider } from "@mui/material";
 import ModeSwitch from "../ModeSwitch";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/slices/userSlice";
+import { useRouter } from "next/navigation";
+
 
 const pages = [
-  "Danh sách đợt khám",
-  "Danh sách nhân viên",
-  "Danh sách bệnh nhân",
+  "Đợt khám",
+  "Nhân viên",
+  "Bệnh nhân",
+  "Thuốc",
 ];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Thông tin tài khoản"];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const router = useRouter();
 
+  const dispatch = useDispatch()
+
+  const user = JSON.parse(Cookies.get('user') as any)
+  dispatch(setUser(user))
+  
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -39,12 +51,20 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+ const handleLogout = async () =>{
+  const res = await fetch("/api/auth/logout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  if(res.ok){
+    router.push("/")
+  }
+ }
   return (
     <AppBar position="static">
       <Box
         sx={{
-          mx: 4,
+          mx: {xs:0.5,md:4},
         }}
       >
         <Toolbar disableGutters>
@@ -70,6 +90,7 @@ function ResponsiveAppBar() {
             flexItem
             sx={{
               mx: 2, // Adjust spacing between elements
+              my: 1, // Adjust spacing between elements
               display: { xs: "none", md: "flex" }, // Hide for smaller screens if needed
               backgroundColor: "#eee", // Set the color of the divider
             }}
@@ -138,9 +159,29 @@ function ResponsiveAppBar() {
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" />
-            </IconButton>
+            <Box sx={{
+              display:'flex',
+              alignItems:'center',
+              gap:2
+            }}>
+              <Box sx={{
+                display:{xs:'none',md:'block'}
+              }}>
+                <Box sx={{
+                  display:'flex',
+                  alignItems:'center',
+                  gap:0.5
+                }}>
+                  <Typography variant="body1" fontStyle='italic'>Xin chào!</Typography>
+                  <Typography variant="body1" fontWeight='bold' >{user?.HoTenNV}</Typography>
+                </Box>
+                  <Typography variant="body1" fontWeight='bold' fontStyle='italic'>{user?.ChucVu} {user?.ChucDanh}</Typography>
+              </Box>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt={user?.HoTenNV} />
+              </IconButton>
+            </Box>
+           
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
@@ -157,8 +198,29 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              <Box sx={{
+                display:{xs:'flex',flexDirection:'column',textAlign:'center',md:'none'}
+              }}>
+              <Box sx={{
+                  display:'flex',
+                  flexDirection:'column',
+                  alignItems:'center',
+                  gap:0.5
+                }}>
+                  <Typography variant="body1" fontStyle='italic'>Xin chào!</Typography>
+                  <Typography variant="body1" fontWeight='bold' >{user?.HoTenNV}</Typography>
+                </Box>
+                  <Typography variant="body1" fontWeight='bold' >{user?.ChucVu} {user?.ChucDanh}</Typography>
+              </Box>
               <ModeSwitch />
-
+              <Divider
+                orientation="horizontal"
+                flexItem
+                sx={{
+                  mx: 2, // Adjust spacing between elements
+                  display: "flex", // Hide for smaller screens if needed
+                }}
+              />
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography sx={{ textAlign: "center" }}>
@@ -166,6 +228,11 @@ function ResponsiveAppBar() {
                   </Typography>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleLogout}>
+                  <Typography sx={{ textAlign: "center" }}>
+                    Đăng xuất
+                  </Typography>
+                </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

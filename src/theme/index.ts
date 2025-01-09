@@ -10,7 +10,17 @@ const roboto = Roboto({
 
 const theme = createTheme({
   colorSchemes: { 
-    light: true,
+     light: {
+      palette:{
+        primary: {
+          main: '#025581', // Main primary color for dark mode
+        },
+        secondary: {
+          main: '#067aa8', // Secondary color for dark mode
+        },
+
+      }
+     } ,
      dark: {
       palette:{
         primary: {
@@ -24,7 +34,8 @@ const theme = createTheme({
           paper: '#110f0f',
         },
       }
-     } },
+     } 
+    },
   cssVariables: {
     colorSchemeSelector: 'class',
   },

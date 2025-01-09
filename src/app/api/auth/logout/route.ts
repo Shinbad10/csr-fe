@@ -9,7 +9,6 @@ export async function POST(req: Request) {
     if (cookies) {
       // Tách tất cả các cookie thành mảng
       const cookieArray = cookies.split(';');
-
       // Xóa từng cookie bằng cách đặt `Max-Age=0`
       cookieArray.forEach((cookie) => {
         const cookieName = cookie.split('=')[0].trim(); // Lấy tên cookie

@@ -20,6 +20,7 @@
     "axios": "^1.7.9",
     "cookie": "^1.0.2",
     "jose": "^5.9.6",
+    "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "next": "15.1.4",
     "react": "^19.0.0",
@@ -27,6 +28,7 @@
     "react-redux": "^9.2.0"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

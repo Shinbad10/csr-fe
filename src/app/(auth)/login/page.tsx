@@ -42,26 +42,39 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Username, Password, Remember }),
-      });
-
-      if (res.ok) {
-        setIsLoggedIn(true);
-      } else {
-        const data = await res.json();
-        setError(data.message || "Login failed");
+    let formError: any = {};
+    // Validate fields and add errors if necessary
+    if (!Username) {
+      formError.Username = "Vui lòng điền tên đăng nhập!";
+    }
+    if (!Password) {
+      formError.Password = "Vui lòng điền mật khẩu!";
+    }else{
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ Username, Password, Remember }),
+        });
+  
+        if (res.ok) {
+          setIsLoggedIn(true);
+        } else {
+          const data = await res.json();
+          formError.Error = data.message
+          setIsLoading(false);
+        }
+      } catch (err) {
+        formError.Error = "Xảy ra lỗi trong quá trình đăng nhập!";
         setIsLoading(false);
       }
-    } catch (err) {
-      setError("Something went wrong");
+    }
+    if (Object.keys(formError).length > 0) {
+      setError(formError);
       setIsLoading(false);
+      return;
     }
   };
-
   useEffect(() => {
     if (isLoggedIn) {
       router.push("/"); // Redirect to Home page after login
@@ -104,6 +117,8 @@ export default function LoginPage() {
           sx={{
             justifyContent: "center",
             display: "flex",
+            alignItems:'center',
+            flexDirection:'column'
           }}
         >
           <Avatar
@@ -112,7 +127,15 @@ export default function LoginPage() {
             variant="square"
             sx={{ width: "10rem", height: "auto" }}
           />
+          
         </Box>
+        {error?.Error && (
+            <Box >
+                <Alert severity="error" sx={{ mt: 1,textAlign:'center',display:'flex',justifyContent:'center' }}>
+                  {error.Error}
+                </Alert>
+            </Box>
+          )}
         <form onSubmit={handleLogin}>
           <TextField
             label="Username"
@@ -124,13 +147,11 @@ export default function LoginPage() {
             placeholder="Nhập tài khoản"
           />
 
-          {error && (
-            <Box mb={2}>
-              {error.Username?.map((msg: string, index: any) => (
-                <Alert key={index} severity="error" sx={{ mb: 1 }}>
-                  {msg}
+          {error?.Username && (
+            <Box >
+                <Alert  severity="error" >
+                  {error.Username}
                 </Alert>
-              ))}
             </Box>
           )}
           <TextField
@@ -143,13 +164,11 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Nhập mật khẩu"
           />
-          {error && (
-            <Box mb={2}>
-              {error.Password?.map((msg: string, index: any) => (
-                <Alert key={index} severity="error" sx={{ mb: 1 }}>
-                  {msg}
+          {error?.Password && (
+            <Box >
+                <Alert  severity="error" >
+                {error.Password}
                 </Alert>
-              ))}
             </Box>
           )}
           <FormControlLabel

@@ -14,9 +14,8 @@ export default function Copyright() {
       }}
     >
       {"Copyright © "}
-      <MuiLink color="inherit" href="https://mui.com/">
-        Your Website
-      </MuiLink>{" "}
+        VISI - MẮT SÁNG CỘNG ĐỒNG
+      {" "}
       {new Date().getFullYear()}.
     </Typography>
   );

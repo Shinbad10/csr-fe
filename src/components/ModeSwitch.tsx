@@ -11,7 +11,6 @@ import { useColorScheme } from "@mui/material/styles";
 
 export default function ModeSwitch() {
   const { mode, setMode } = useColorScheme();
-
   if (!mode) {
     return null;
   }
@@ -27,8 +26,6 @@ export default function ModeSwitch() {
         display: "flex",
         justifyContent: "flex-end",
         alignItems: "center",
-        mt: 1,
-        p: 1,
       }}
     >
       <Tooltip title="Light">
