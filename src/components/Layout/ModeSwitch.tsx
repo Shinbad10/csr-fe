@@ -24,7 +24,7 @@ export default function ModeSwitch() {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "flex-end",
+        justifyContent: "center",
         alignItems: "center",
       }}
     >

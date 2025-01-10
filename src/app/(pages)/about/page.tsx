@@ -4,9 +4,12 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import NextLink from "next/link";
-import ProTip from "@/components/ProTip";
-import Copyright from "@/components/Copyright";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Trang chủ | VISI - CSR",
+  description: "Phần mềm quản lý khám tầm soát cộng đồng",
+};
 export default function About() {
   return (
     <Container maxWidth="lg">
@@ -27,8 +30,6 @@ export default function About() {
             Go to the home page
           </Button>
         </Box>
-        <ProTip />
-        <Copyright />
       </Box>
     </Container>
   );

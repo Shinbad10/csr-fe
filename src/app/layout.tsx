@@ -4,6 +4,12 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "@/theme";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "VISI - MẮT SÁNG CỘNG ĐỒNG",
+  description: "Phần mềm quản lý khám tầm soát cộng đồng",
+};
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (

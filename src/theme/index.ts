@@ -16,18 +16,21 @@ const theme = createTheme({
           main: '#025581', // Main primary color for dark mode
         },
         secondary: {
-          main: '#067aa8', // Secondary color for dark mode
+          main: '#b8e3f3', // Secondary color for dark mode
         },
-
+        background:{
+          default:'#e3e3e3',
+          paper: '#ffffff',
+        }
       }
      } ,
      dark: {
       palette:{
         primary: {
-          main: '#0d6b4c', // Main primary color for dark mode
+          main: '#1f8362', // Main primary color for dark mode
         },
         secondary: {
-          main: '#f48fb1', // Secondary color for dark mode
+          main: '#e6cad3', // Secondary color for dark mode
         },
         background: {
           default: '#242323',
