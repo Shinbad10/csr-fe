@@ -1,7 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+interface Notification {
+  open:boolean,
+  message: string;
+  severity: string;
+  vertical: string;
+  horizontal: string;
+}
+
+
 interface App {
   loadingProgress: boolean;
+  notification: Notification 
 }
 
 interface AppState {
@@ -9,10 +19,19 @@ interface AppState {
 }
 
 const initialState: AppState = {
-    app: { loadingProgress: true }, 
+    app: { 
+        loadingProgress: true,
+        notification:{
+            open:false,
+            message: "",
+            severity: "success",
+            vertical: "top",
+            horizontal: "right",
+        }
+    }, 
 }
 
-export const userSlice = createSlice({
+export const appSlice  = createSlice({
   name: 'app',
   initialState,
   reducers: {
@@ -22,9 +41,25 @@ export const userSlice = createSlice({
     clearApp: (state) => {
       state.app = null; // Xoá thông tin người dùng khi logout
     },
+    setNotification: (state, action: PayloadAction<Notification>) => {
+      if (state.app) {
+        state.app.notification = action.payload;
+      }
+    },
+    clearNotification: (state) => {
+      if (state.app) {
+        state.app.notification = {
+          open: false,
+          message: "",
+          severity: "success",
+          vertical: "top",
+          horizontal: "right",
+        };
+      }
+    },
   },
 })
 
-export const { setApp, clearApp } = userSlice.actions
+export const { setApp, clearApp, setNotification, clearNotification } = appSlice.actions;
 
-export default userSlice.reducer
+export default appSlice.reducer

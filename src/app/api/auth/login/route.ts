@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 import { serialize } from 'cookie';
 import { jwtVerify } from 'jose'; // Thay đổi từ jsonwebtoken sang jose
+import { apiUrl } from '../../urlAPI';
 
 
 export async function POST(req: Request) {
@@ -9,14 +10,14 @@ export async function POST(req: Request) {
 
   try {
     // Gửi request đến API login của backend
-    const response = await axios.post('http://localhost:3000/auth/login', {
+    const response = await axios.post(apiUrl.base+apiUrl.auth.login, {
         Username,
         Password,
         Remember
     });
-
-    const { accessToken, refreshToken } = response.data;
-
+    const data = response.data
+    if(data.accessToken){
+      const { accessToken, refreshToken } = data;
     // Lưu token vào cookie
     const accessCookie = serialize('accessToken', accessToken, {
       httpOnly: true,
@@ -47,7 +48,13 @@ export async function POST(req: Request) {
 
     // Gửi cookie về client
     return res;
-  } catch (error: any) {
+    }
+    return NextResponse.json(
+      { message: data.response?.message  },
+      { status: 401 }
+    ); 
+  } 
+  catch (error: any) {
     return NextResponse.json(
       { message: error.response?.data?.message || 'Login failed' },
       { status: 401 }

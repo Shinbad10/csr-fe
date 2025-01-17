@@ -17,6 +17,7 @@ import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/userSlice";
 import { useRouter, usePathname } from "next/navigation";
+import Breadcrumb from "@/components/Layout/Breadcum"; // Adjust the import path as necessary
 
 const pages = [
   { name: "Đợt khám", path: "/campaigns" },
@@ -32,12 +33,17 @@ const settings = [
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [user, setUserState] = React.useState<any>(null); // Khởi tạo state cho user
   const router = useRouter();
 
   const dispatch = useDispatch();
 
-  const user = JSON.parse(Cookies.get("user") as any);
-  dispatch(setUser(user));
+  React.useEffect(() => {
+    const userData = Cookies?.get("user") as any;
+    const parsedUser = JSON?.parse(userData || null);
+    setUserState(parsedUser); // Set state client-side
+    dispatch(setUser(parsedUser)); // Cập nhật Redux store nếu cần
+  }, []);
 
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
@@ -70,13 +76,16 @@ function ResponsiveAppBar() {
         }}
       >
         <Toolbar disableGutters>
-          <Eye sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
-            variant="h6"
+            variant="h4"
             noWrap
             component="a"
-            href="/"
+            onClick={() => {
+              router.push("/"); // Chuyển trang bằng router.push
+            }}
+            // href="/"
             sx={{
+              cursor: "pointer",
               mr: 2,
               display: { xs: "none", md: "flex" },
               fontWeight: 700,
@@ -85,6 +94,7 @@ function ResponsiveAppBar() {
               fontSize: "lg",
             }}
           >
+            <Eye sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
             VISI - MẮT SÁNG CỘNG ĐỒNG
           </Typography>
           <Divider
@@ -306,6 +316,7 @@ function ResponsiveAppBar() {
           </Box>
         </Toolbar>
       </Box>
+      <Breadcrumb />
     </AppBar>
   );
 }

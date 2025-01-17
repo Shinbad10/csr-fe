@@ -11,7 +11,7 @@ import CardActions from "@mui/material/CardActions";
 
 export const metadata: Metadata = {
   title: "Quản lý đợt khám | VISI - CSR",
-  description: "Phần mềm quản lý khám tầm soát cộng đồng",
+  description: "Danh sách đợt khám",
 };
 
 export default function Campaign() {

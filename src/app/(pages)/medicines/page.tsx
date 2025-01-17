@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Quản lý thuốc | VISI - CSR",
-  description: "Phần mềm quản lý khám tầm soát cộng đồng",
+  description: "Danh mục thuốc",
 };
 export default function About() {
   return (
