@@ -34,6 +34,7 @@ export default function EmployeeTable() {
   const [rowData, setRow] = React.useState<any>([]);
   const [loading, setLoading] = React.useState(false); // Thêm state loading
   const [editedRows, setEditedRows] = React.useState<any[]>([]);
+  const [rowEditFunc, setRowEditFunc] = React.useState<any[]>([]);
   const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
   const [functionList, setFunctionList] = React.useState<any[]>([]);
   const [functionByEmployee, setFunctionByEmployee] = React.useState<any[]>([]);
@@ -72,7 +73,6 @@ export default function EmployeeTable() {
     }
   };
   const handleEditFunction = async (row: any) => {
-    console.log("Sửa hàng:", row);
     try {
       const func = await fetch("/api/functions/byemployee", {
         method: "POST",
@@ -80,6 +80,7 @@ export default function EmployeeTable() {
         body: JSON.stringify({ row }),
       });
       const funcList = await func.json();
+      setRowEditFunc(row.MaNV); // Cập nhật lại state với dữ liệu mới
       setFunctionByEmployee(funcList.data.data); // Cập nhật lại state với dữ liệu mới
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -92,16 +93,42 @@ export default function EmployeeTable() {
     [handleEditFunction]
   );
   const handleCloseDialog = () => {
+    setFunctionByEmployee([]);
     setOpenDialog(false); // Close the dialog
   };
 
-  const handleSaveRole = () => {
-    console.log("Save changes");
+  const handleSaveFunction = async () => {
+    try {
+      await fetch("/api/functions/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ MaNV: rowEditFunc }),
+      });
+      await fetch("/api/functions/insert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ functionByEmployee, MaNV: rowEditFunc }),
+      });
+      dispatch(
+        setNotification({
+          open: true,
+          message: "Lưu thành công.",
+          severity: "success",
+          vertical: "top",
+          horizontal: "right",
+        })
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+    }
+    setFunctionByEmployee([]);
     setOpenDialog(false); // Close after saving
   };
 
-  const handleDeleteRole = () => {
-    console.log("Cancel role editing");
+  const handleDeleteFunction = () => {
+    console.log("Cancel Functionediting");
+    setFunctionByEmployee([]);
     setOpenDialog(false); // Close without saving
   };
 
@@ -306,7 +333,6 @@ export default function EmployeeTable() {
     });
     return updatedFunctions;
   };
-  console.log(functionByEmployee);
   const [paginationModel, setPaginationModel] = React.useState({
     page: 0,
     pageSize: 15,
@@ -326,12 +352,14 @@ export default function EmployeeTable() {
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
           disableColumnMenu
-          checkboxSelection
           loading={loading}
           paginationModel={paginationModel}
           onRowSelectionModelChange={(newSelection) =>
             setSelectedRows(newSelection)
           }
+          slotProps={{
+            toolbar: { printOptions: { disableToolbarButton: true } },
+          }}
           onPaginationModelChange={setPaginationModel}
           hideFooterSelectedRowCount
           sx={{
@@ -428,10 +456,10 @@ export default function EmployeeTable() {
           </Table>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSaveRole} color="primary">
+          <Button onClick={handleSaveFunction} color="primary">
             Lưu
           </Button>
-          <Button onClick={handleDeleteRole} color="error">
+          <Button onClick={handleDeleteFunction} color="error">
             Hủy
           </Button>
         </DialogActions>

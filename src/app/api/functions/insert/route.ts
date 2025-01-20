@@ -5,23 +5,41 @@ import { cookies } from "next/headers";
 
 
 export async function POST(req: Request) {
-  const {newRow}  = await req.json();
+  const { functionByEmployee, MaNV}  = await req.json();
   const cookie = await cookies()
   const api = createServerApi(cookie as any);
+  if (!functionByEmployee || !Array.isArray(functionByEmployee) || !MaNV) {
+    return NextResponse.json({ message: 'Invalid input' }, { status: 400 });
+  }
   try {
-     const response = await api.post(apiUrl.medicines, {
-      TenThuoc: newRow.TenThuoc,
-      DVT: newRow.DVT,
-      CachDung: newRow.CachDung,
-      DuongDung: newRow.DuongDung,
+     // Execute all requests concurrently
+    const results = await Promise.allSettled(
+      functionByEmployee.map(async (funcByEmp: any) => {
+        return api.post(`${apiUrl.functions}`, {
+          MaNV,
+          MaChucNang: funcByEmp.MaChucNang,
         });
-    const data = response.data;
-    const res = NextResponse.json({ message: 'successful',data:data });
-    return res;
+      })
+    );
+      // Handle results and errors
+      const successes = results.filter((res) => res.status === 'fulfilled');
+      const failures = results.filter((res) => res.status === 'rejected');
+  
+      // Log errors if needed
+      if (failures.length > 0) {
+        console.error('Failed requests:', failures);
+      }
+      // Return response
+      return NextResponse.json({
+        message: 'Process completed',
+        successes: successes.length,
+        failures: failures.length,
+      });
   } catch (error: any) {
+    console.error('Error in POST:', error);
     return NextResponse.json(
-      { message: error.response?.data?.message || 'Login failed' },
-      { status: 401 }
+      { message: error.message || 'An error occurred' },
+      { status: 500 }
     );
   }
 }

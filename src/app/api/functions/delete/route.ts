@@ -5,20 +5,13 @@ import { cookies } from "next/headers";
 
 export async function POST(req: Request) { // Use POST for bulk delete (if it's intended to be POST)
   try {
-    const { selectedRows } = await req.json(); // Get the selected row IDs
+    const { MaNV } = await req.json(); // Get the selected row IDs
     const cookie = await cookies();
     const api = createServerApi(cookie as any);
-
-    // Wait for all delete requests to complete using Promise.all
-    await Promise.all(
-      selectedRows.map(async (row: any) => {
-        const response = await api.delete(`${apiUrl.medicines}/${row}`);
-        if (response.status !== 200) {
-          throw new Error(`Failed to delete row with ID: ${row}`);
-        }
-      })
-    );
-
+    const response = await api.delete(`${apiUrl.functions}/${MaNV}`);
+    if (response.status !== 200) {
+      throw new Error(`Failed to delete row with ID: ${MaNV}`);
+    }
     return NextResponse.json({ message: 'Delete successful' });
 
   } catch (error: any) {

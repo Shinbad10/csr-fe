@@ -14,6 +14,7 @@ export async function POST(req: Request) {
       DVT: newRow.DVT,
       CachDung: newRow.CachDung,
       DuongDung: newRow.DuongDung,
+      DVSD: newRow.DVSD,
         });
     const data = response.data;
     const res = NextResponse.json({ message: 'successful',data:data });

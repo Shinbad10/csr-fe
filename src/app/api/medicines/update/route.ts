@@ -8,13 +8,13 @@ export async function POST(req: Request) { // Use PUT for updating
     const {updatedRow} = await req.json(); // Get the edited row data
     const cookie = await cookies();
     const api = createServerApi(cookie as any);
-console.log(updatedRow)
     // Perform the PUT request
     await api.put(`${apiUrl.medicines}/${updatedRow.MaThuoc}`, {
       TenThuoc: updatedRow.TenThuoc,
       DVT: updatedRow.DVT,
       CachDung: updatedRow.CachDung,
       DuongDung: updatedRow.DuongDung,
+      DVSD: updatedRow.DVSD,
     });
     // Send success response
     return NextResponse.json({ message: 'Update successful' });

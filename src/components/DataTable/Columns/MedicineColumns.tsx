@@ -33,6 +33,12 @@ const MedicineColumns: GridColDef[] = [
     minWidth: 150,
     editable: true,
   },
+  {
+    field: "DVSD",
+    headerName: "Đơn vị sử dụng",
+    minWidth: 150,
+    editable: true,
+  },
 ];
 
 export default MedicineColumns;

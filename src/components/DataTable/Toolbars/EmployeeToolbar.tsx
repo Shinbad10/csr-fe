@@ -1,6 +1,4 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import {
   CloseOutlined,
   DeleteFilled,
@@ -12,14 +10,10 @@ import {
   GridToolbarColumnsButton,
   GridToolbarQuickFilter,
   GridToolbarExport,
+  GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import {
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
+import { Typography, Button, Box } from "@mui/material";
+import DeleteConfirmationDialog from "@/components/Layout/ConfirmDialog";
 
 interface CustomToolbarProps {
   handleAddRow: () => void;
@@ -171,16 +165,22 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({
               </Button>
             </>
           )}
-          <GridToolbarExport
-            csvOptions={{
-              utf8WithBom: true, // Thêm tùy chọn này để xuất với mã hóa UTF-8 có BOM
-            }}
-          />
+          <Button variant="text" color="primary">
+            <GridCsvExportMenuItem
+              options={{
+                utf8WithBom: true, // Thêm tùy chọn này để xuất với mã hóa UTF-8 có BOM
+              }}
+            />
+          </Button>
         </Box>
       </GridToolbarContainer>
-
+      <DeleteConfirmationDialog
+        openDialog={openDialog}
+        handleDeleteCancel={handleDeleteCancel}
+        handleDeleteConfirm={handleDeleteConfirm}
+      />
       {/* Delete Confirmation Dialog */}
-      <Dialog open={openDialog} onClose={handleDeleteCancel}>
+      {/* <Dialog open={openDialog} onClose={handleDeleteCancel}>
         <DialogTitle>Xác nhận xóa</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
@@ -195,7 +195,7 @@ const CustomToolbar: React.FC<CustomToolbarProps> = ({
             Xóa
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };

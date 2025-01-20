@@ -19,17 +19,6 @@ import { setUser } from "@/store/slices/userSlice";
 import { useRouter, usePathname } from "next/navigation";
 import Breadcrumb from "@/components/Layout/Breadcum"; // Adjust the import path as necessary
 
-const pages = [
-  { name: "Đợt khám", path: "/campaigns" },
-  { name: "Nhân viên", path: "/employees" },
-  { name: "Bệnh nhân", path: "/patients" },
-  { name: "Thuốc", path: "/medicines" },
-];
-const settings = [
-  { name: "Thông tin tài khoản", path: "/profiles" },
-  { name: "Đổi mật khẩu", path: "/change-password" },
-];
-
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -38,6 +27,16 @@ function ResponsiveAppBar() {
 
   const dispatch = useDispatch();
 
+  const pages = [
+    { name: "Đợt khám", path: "/campaigns" },
+    { name: "Nhân viên", path: "/employees" },
+    { name: "Bệnh nhân", path: "/patients" },
+    { name: "Thuốc", path: "/medicines" },
+  ];
+  const settings = [
+    { name: "Thông tin tài khoản", path: "/profiles" },
+    { name: "Đổi mật khẩu", path: "/change-password" },
+  ];
   React.useEffect(() => {
     const userData = Cookies?.get("user") as any;
     const parsedUser = JSON?.parse(userData || null);

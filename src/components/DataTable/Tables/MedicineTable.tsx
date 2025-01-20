@@ -138,6 +138,7 @@ export default function EmployeeTable() {
       DVT: "Lọ",
       CachDung: "Nhỏ",
       DuongDung: "mắt",
+      DVSD: "giọt",
     };
 
     fetch("/api/medicines/insert", {
@@ -230,7 +231,6 @@ export default function EmployeeTable() {
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
           disableColumnMenu
-          checkboxSelection
           loading={loading}
           paginationModel={paginationModel}
           onRowSelectionModelChange={(newSelection) =>
@@ -242,6 +242,9 @@ export default function EmployeeTable() {
             flexGrow: 1,
             minHeight: "78vh",
             border: "1px solid #ddd",
+            "@media print": {
+              ".MuiDataGrid-main": { color: "rgba(0, 0, 0, 0.87)" },
+            },
           }}
           slots={{
             toolbar: () => (
