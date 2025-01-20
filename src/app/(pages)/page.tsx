@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Trang chủ | VISI - CSR",
-  description: "Phần mềm quản lý khám tầm soát cộng đồng",
+  description: "Phần mềm quản lý khám tầm soát",
 };
 export default function Home() {
   return (

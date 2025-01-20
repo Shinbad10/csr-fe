@@ -22,7 +22,7 @@ function index() {
   return (
     <Box
       sx={{
-        backgroundColor: "white",
+        backgroundColor: "background.paper",
       }}
     >
       <Typography

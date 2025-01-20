@@ -2,8 +2,10 @@ import { GridColDef, GridRenderEditCellParams } from "@mui/x-data-grid";
 import { Box, MenuItem, Select, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { IconButton } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
 
-const EmployeeColumns: GridColDef[] = [
+const EmployeeColumns = (handleEdit: (row: any) => void): GridColDef[] => [
   {
     field: "MaNV",
     headerName: "ID",
@@ -78,7 +80,7 @@ const EmployeeColumns: GridColDef[] = [
     minWidth: 150,
     editable: true,
   },
-  { field: "DiaChi", headerName: "Địa chỉ", minWidth: 200, editable: true },
+  { field: "DiaChi", headerName: "Địa chỉ", minWidth: 500, editable: true },
   { field: "ChucVu", headerName: "Chức vụ", minWidth: 150, editable: true },
   {
     field: "ChucDanh",
@@ -95,7 +97,7 @@ const EmployeeColumns: GridColDef[] = [
   {
     field: "Password",
     headerName: "Mật khẩu",
-    minWidth: 150,
+    minWidth: 100,
     editable: true,
     renderCell: () => (
       <span style={{ fontFamily: "monospace" }}>{"•".repeat(6)} </span>
@@ -103,7 +105,7 @@ const EmployeeColumns: GridColDef[] = [
     renderEditCell: (params) => (
       <TextField
         type="password"
-        value={""}
+        value={params.value}
         onChange={(event) =>
           params.api.setEditCellValue(
             { id: params.id, field: params.field, value: event.target.value },
@@ -112,6 +114,39 @@ const EmployeeColumns: GridColDef[] = [
         }
         size="small"
       />
+    ),
+  },
+  {
+    field: "setting",
+    headerName: "Chức năng",
+    width: 100,
+    renderCell: (params) => (
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <IconButton
+          onClick={() => handleEdit(params.row)}
+          sx={{
+            backgroundColor: "primary.main",
+
+            color: "#fff",
+            borderRadius: "50%", // Hình tròn cho nút
+            padding: "4px", // Giảm khoảng đệm cho phù hợp với chế độ compact
+            "&:hover": {
+              backgroundColor: "#1769aa", // Thay đổi màu khi hover
+              transform: "scale(1.1)", // Tăng kích thước nhẹ khi hover
+            },
+          }}
+        >
+          <SettingsIcon sx={{ fontSize: 18 }} />{" "}
+        </IconButton>
+      </Box>
     ),
   },
 ];

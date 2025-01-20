@@ -10,33 +10,16 @@ import {
   useGridApiRef,
 } from "@mui/x-data-grid";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import {
-  Typography,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Switch,
-} from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { FileExcelOutlined, PrinterOutlined } from "@ant-design/icons";
 import { EmployeeToolbar } from "@/components/DataTable/Toolbars";
-import { EmployeeColumns } from "@/components/DataTable/Columns";
+import { MedicineColumns } from "@/components/DataTable/Columns";
 import Pagination from "@/components/DataTable/Pagination";
 
 export default function EmployeeTable() {
   const [rowData, setRow] = React.useState<any>([]);
   const [loading, setLoading] = React.useState(false); // Thêm state loading
   const [editedRows, setEditedRows] = React.useState<any[]>([]);
-  const [openDialog, setOpenDialog] = React.useState(false); // State for dialog visibility
-  const [functionList, setFunctionList] = React.useState<any[]>([]);
-  const [functionByEmployee, setFunctionByEmployee] = React.useState<any[]>([]);
   const [selectedRows, setSelectedRows] = React.useState<GridRowSelectionModel>(
     []
   );
@@ -45,64 +28,17 @@ export default function EmployeeTable() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/employees", {
+      const response = await fetch("/api/medicines", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       const rows = await response.json();
       setRow(rows.data.data); // Cập nhật lại state với dữ liệu mới
-      getFunctions();
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
-  };
-  const getFunctions = async () => {
-    try {
-      const func = await fetch("/api/functions", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      const funcList = await func.json();
-      setFunctionList(funcList.data.data); // Cập nhật lại state với dữ liệu mới
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-    }
-  };
-  const handleEditFunction = async (row: any) => {
-    console.log("Sửa hàng:", row);
-    try {
-      const func = await fetch("/api/functions/byemployee", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ row }),
-      });
-      const funcList = await func.json();
-      setFunctionByEmployee(funcList.data.data); // Cập nhật lại state với dữ liệu mới
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-    }
-    setOpenDialog(true); // Open the dialog
-  };
-  const columns = React.useMemo(
-    () => EmployeeColumns(handleEditFunction),
-    [handleEditFunction]
-  );
-  const handleCloseDialog = () => {
-    setOpenDialog(false); // Close the dialog
-  };
-
-  const handleSaveRole = () => {
-    console.log("Save changes");
-    setOpenDialog(false); // Close after saving
-  };
-
-  const handleDeleteRole = () => {
-    console.log("Cancel role editing");
-    setOpenDialog(false); // Close without saving
   };
 
   const handleProcessRowUpdateError = (error: any) => {
@@ -118,18 +54,18 @@ export default function EmployeeTable() {
   };
 
   const processRowUpdate = (newRow: any) => {
-    const { MaNV } = newRow;
+    const { MaThuoc } = newRow;
     const updatedRows = rowData.map((row: any) =>
-      row.MaNV === MaNV ? { ...row, ...newRow } : row
+      row.MaThuoc === MaThuoc ? { ...row, ...newRow } : row
     );
     setRow(updatedRows);
     setEditedRows((prevEdited) => {
-      const alreadyEdited = prevEdited.some((row) => row.MaNV === MaNV);
+      const alreadyEdited = prevEdited.some((row) => row.MaThuoc === MaThuoc);
       if (!alreadyEdited) {
         return [...prevEdited, newRow];
       }
       return prevEdited.map((row) =>
-        row.MaNV === MaNV ? { ...row, ...newRow } : row
+        row.MaThuoc === MaThuoc ? { ...row, ...newRow } : row
       );
     });
     return newRow;
@@ -158,7 +94,7 @@ export default function EmployeeTable() {
         editedRows.map(async (updatedRow) => {
           setLoading(true);
           try {
-            await fetch("/api/employees/update", {
+            await fetch("/api/medicines/update", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ updatedRow }),
@@ -197,19 +133,14 @@ export default function EmployeeTable() {
     setLoading(true);
     const newRow = {
       id: rowData.length + 1,
-      MaNV: rowData.length + 1,
-      HoTenNV: `NV${(rowData.length + 1).toString().padStart(3, "0")}`,
-      NgaySinh: new Date("1999-01-01"),
-      GioiTinh: "Nam",
-      DienThoai: null,
-      DiaChi: null,
-      ChucVu: "Nhân viên",
-      ChucDanh: null,
-      Username: `NV${(rowData.length + 1).toString().padStart(3, "0")}`,
+      MaThuoc: rowData.length + 1,
+      TenThuoc: `Thuốc ${(rowData.length + 1).toString().padStart(3, "0")}`,
+      DVT: "Lọ",
+      CachDung: "Nhỏ",
+      DuongDung: "mắt",
     };
 
-    // Gửi yêu cầu API thêm hàng mới
-    fetch("/api/employees/insert", {
+    fetch("/api/medicines/insert", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ newRow }),
@@ -221,12 +152,12 @@ export default function EmployeeTable() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Có lỗi khi thêm nhân viên:", error);
+        console.error("Có lỗi khi thêm thuốc:", error);
         setLoading(false);
         dispatch(
           setNotification({
             open: true,
-            message: "Lỗi khi thêm nhân viên.",
+            message: "Lỗi khi thêm thuốc.",
             severity: "error",
             vertical: "top",
             horizontal: "right",
@@ -238,7 +169,7 @@ export default function EmployeeTable() {
     if (selectedRows.length > 0) {
       setLoading(true);
       try {
-        await fetch("/api/employees/delete", {
+        await fetch("/api/medicines/delete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ selectedRows }),
@@ -280,33 +211,6 @@ export default function EmployeeTable() {
       );
     }
   };
-  const handleFunctionToggle = (index: number) => {
-    const updatedFunctions = functionList.map((func, i) => {
-      if (i === index) {
-        const updatedFunction = { ...func, canEdit: !func.canEdit };
-        setFunctionByEmployee((prevFunctionByEmployee) => {
-          const functionExists = prevFunctionByEmployee.some(
-            (empFunc) => empFunc.MaChucNang === func.MaChucNang
-          );
-          if (functionExists) {
-            return prevFunctionByEmployee.filter(
-              (empFunc) => empFunc.MaChucNang !== func.MaChucNang
-            );
-          } else {
-            return [
-              ...prevFunctionByEmployee,
-              { MaChucNang: func.MaChucNang, TenChucNang: func.TenChucNang },
-            ];
-          }
-        });
-        return updatedFunction;
-      }
-
-      return func;
-    });
-    return updatedFunctions;
-  };
-  console.log(functionByEmployee);
   const [paginationModel, setPaginationModel] = React.useState({
     page: 0,
     pageSize: 15,
@@ -319,10 +223,10 @@ export default function EmployeeTable() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DataGrid
           rows={rowData}
-          columns={columns}
+          columns={MedicineColumns}
           apiRef={apiRef}
           density="compact"
-          getRowId={(row) => row.MaNV}
+          getRowId={(row) => row.MaThuoc}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
           disableColumnMenu
@@ -350,7 +254,16 @@ export default function EmployeeTable() {
                 editedRows={editedRows}
               />
             ),
-            noRowsOverlay: () => <Typography>Không có dữ liệu</Typography>,
+            noRowsOverlay: () => (
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  padding: 4,
+                }}
+              >
+                Không có dữ liệu!
+              </Typography>
+            ),
             pagination: Pagination,
           }}
           localeText={{
@@ -379,63 +292,6 @@ export default function EmployeeTable() {
           }}
         />
       </LocalizationProvider>
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle
-          sx={{
-            textAlign: "center", // Căn giữa tiêu đề
-            fontSize: "1.5rem", // Tăng kích thước chữ
-            fontWeight: "bold", // Làm đậm chữ
-          }}
-        >
-          Cài đặt chức năng
-        </DialogTitle>
-        <DialogContent>
-          <Table
-            sx={{
-              "& .MuiTableCell-root": {
-                padding: "4px 8px", // Giảm padding của các ô trong bảng
-                fontSize: "0.875rem", // Kích thước chữ nhỏ hơn
-              },
-              "& .MuiTableRow-root": {
-                height: "32px", // Giảm chiều cao hàng
-              },
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Chức năng</TableCell>
-                <TableCell>Bật/Tắt</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {functionList.map((func, index) => {
-                const isChecked = functionByEmployee.some(
-                  (empFunc) => empFunc.MaChucNang === func.MaChucNang
-                );
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{func.TenChucNang}</TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={isChecked} // Đặt trạng thái checked tùy thuộc vào việc có tồn tại MaChucNang trong functionByEmployee
-                        onChange={() => handleFunctionToggle(index)} // Xử lý thay đổi toggle
-                      />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleSaveRole} color="primary">
-            Lưu
-          </Button>
-          <Button onClick={handleDeleteRole} color="error">
-            Hủy
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

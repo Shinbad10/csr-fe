@@ -178,7 +178,7 @@ function CustomPagination() {
             onChange={handlePageSizeChange}
             label="Số kết quả/trang"
           >
-            {[5, 10, 15].map((size) => (
+            {[5, 10, 15, 50, 100].map((size) => (
               <MenuItem
                 key={size}
                 value={size}
@@ -199,7 +199,14 @@ function CustomPagination() {
             </MenuItem>
           </Select>
         </FormControl>
-        <Typography variant="body1">Tổng {rowCount} dòng</Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontSize: { xs: 11, md: "default" },
+          }}
+        >
+          Tổng {rowCount} dòng
+        </Typography>
       </Box>
     </Box>
   );

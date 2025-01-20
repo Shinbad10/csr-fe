@@ -5,7 +5,7 @@ import TableEmployee from "../../../components/DataTable/Tables/EmployeeTable";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
-export const metadata: any = {
+export const metadata: Metadata = {
   title: "Quản lý nhân viên | VISI - CSR",
   description: "Danh Sách Nhân Viên",
 };

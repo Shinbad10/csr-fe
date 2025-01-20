@@ -1,5 +1,6 @@
 'use client';
 import { createTheme } from '@mui/material/styles';
+import type {} from '@mui/x-data-grid/themeAugmentation';
 import { Roboto } from 'next/font/google';
 
 const roboto = Roboto({
@@ -131,7 +132,20 @@ const theme = createTheme({
         },
       },
     },
-    
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          fontSize: "13px", // Kích thước chữ mặc định cho toàn bộ DataGrid
+        },
+        cell: {
+          fontSize: "13px", // Kích thước chữ trong các ô
+        },
+        columnHeaders: {
+          fontSize: "14px", // Kích thước chữ trong header
+          fontWeight: "bold", // Đậm header nếu cần
+        },
+      },
+    },
   },
   
 });
