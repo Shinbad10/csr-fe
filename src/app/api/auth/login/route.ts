@@ -48,7 +48,6 @@ export async function POST(req: Request) {
       path: '/',
       maxAge: 60 * 60, // 1 giờ
     });
-    console.log(userCookie)
     const res = NextResponse.json({ message: 'Login successful' });
     res.headers.set('Set-Cookie', accessCookie);
     res.headers.append('Set-Cookie', refreshCookie);

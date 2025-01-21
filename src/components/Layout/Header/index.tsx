@@ -17,22 +17,35 @@ import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/userSlice";
 import { useRouter, usePathname } from "next/navigation";
+import { commonPages, adminPages } from "@/routes"; // Adjust the import path as necessary
 import Breadcrumb from "@/components/Layout/Breadcum"; // Adjust the import path as necessary
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [user, setUserState] = React.useState<any>(null); // Khởi tạo state cho user
+  const [user, setUserState] = React.useState<any>(null); // Initialize user state
   const router = useRouter();
-
   const dispatch = useDispatch();
 
-  const pages = [
-    { name: "Đợt khám", path: "/campaigns" },
-    { name: "Nhân viên", path: "/employees" },
-    { name: "Bệnh nhân", path: "/patients" },
-    { name: "Thuốc", path: "/medicines" },
-  ];
+  const pathname = usePathname(); // Store current path to avoid Hook inconsistency
+
+  React.useEffect(() => {
+    const userData = Cookies?.get("user") as any;
+    const parsedUser = JSON?.parse(userData || null);
+    setUserState(parsedUser); // Set state client-side
+    dispatch(setUser(parsedUser)); // Update Redux store if needed
+  }, []);
+
+  const getPages = React.useCallback(() => {
+    return user?.funcData?.some(
+      (item: any) => item.MaChucNang === 1 || item.MaChucNang === 2
+    )
+      ? [...commonPages, ...adminPages]
+      : commonPages;
+  }, [user]);
+
+  const pages = getPages();
+
   const settings = [
     { name: "Thông tin tài khoản", path: "/profiles" },
     { name: "Đổi mật khẩu", path: "/change-password" },
@@ -134,27 +147,25 @@ function ResponsiveAppBar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {pages.map((page) => {
-                const isActive = usePathname() === page.path;
-                return (
-                  <MenuItem
-                    key={page.name}
-                    sx={{
-                      backgroundColor: isActive ? "secondary.main" : "default",
-                      color: isActive ? "primary.main" : "default",
-                      fontWeight: isActive ? "bold" : "normal",
-                    }}
-                    onClick={() => {
-                      router.push(page.path); // Chuyển trang bằng router.push
-                      handleCloseNavMenu(); // Đóng menu sau khi chuyển
-                    }}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>
-                      {page.name}
-                    </Typography>
-                  </MenuItem>
-                );
-              })}
+              {pages.map((page) => (
+                <MenuItem
+                  key={page.name}
+                  sx={{
+                    backgroundColor:
+                      pathname === page.path ? "secondary.main" : "default",
+                    color: pathname === page.path ? "primary.main" : "default",
+                    fontWeight: pathname === page.path ? "bold" : "normal",
+                  }}
+                  onClick={() => {
+                    router.push(page.path); // Navigate with router.push
+                    handleCloseNavMenu(); // Close menu after navigation
+                  }}
+                >
+                  <Typography sx={{ textAlign: "center" }}>
+                    {page.name}
+                  </Typography>
+                </MenuItem>
+              ))}
             </Menu>
           </Box>
           <Eye sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -177,25 +188,22 @@ function ResponsiveAppBar() {
           <Box
             sx={{ flexGrow: 1, display: { xs: "none", md: "flex", gap: 4 } }}
           >
-            {pages.map((page) => {
-              const isActive = usePathname() === page.path;
-              return (
-                <Button
-                  key={page.name}
-                  onClick={() => {
-                    router.push(page.path);
-                  }}
-                  sx={{
-                    backgroundColor: isActive ? "secondary.main" : "default",
-                    color: isActive ? "primary.main" : "white",
-                    display: "block",
-                    fontWeight: isActive ? "bold" : "normal",
-                  }}
-                >
-                  {page.name}
-                </Button>
-              );
-            })}
+            {pages.map((page) => (
+              <Button
+                key={page.name}
+                onClick={() => {
+                  router.push(page.path);
+                }}
+                sx={{
+                  backgroundColor:
+                    pathname === page.path ? "secondary.main" : "default",
+                  color: pathname === page.path ? "primary.main" : "white",
+                  fontWeight: pathname === page.path ? "bold" : "normal",
+                }}
+              >
+                {page.name}
+              </Button>
+            ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Box
@@ -221,7 +229,7 @@ function ResponsiveAppBar() {
                     Xin chào!
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {user?.HoTenNV}
+                    {user?.payload?.HoTenNV}
                   </Typography>
                 </Box>
                 <Typography
@@ -229,11 +237,11 @@ function ResponsiveAppBar() {
                   fontWeight="bold"
                   fontStyle="italic"
                 >
-                  {user?.ChucVu} {user?.ChucDanh}
+                  {user?.payload?.ChucVu} {user?.payload?.ChucDanh}
                 </Typography>
               </Box>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={user?.HoTenNV} />
+                <Avatar alt={user?.payload?.HoTenNV} />
               </IconButton>
             </Box>
 
