@@ -1,4 +1,5 @@
 import EmployeeColumns from "./EmployeeColumns";
 import MedicineColumns from "./MedicineColumns";
+import CampaignColumns from "./CampaignColumns";
 
-export { EmployeeColumns, MedicineColumns };
+export { EmployeeColumns, MedicineColumns, CampaignColumns };

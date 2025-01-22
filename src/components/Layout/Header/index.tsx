@@ -283,7 +283,7 @@ function ResponsiveAppBar() {
                     Xin chào!
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {user?.HoTenNV}
+                    {user?.payload?.HoTenNV}
                   </Typography>
                 </Box>
                 <Typography
@@ -291,7 +291,7 @@ function ResponsiveAppBar() {
                   fontWeight="bold"
                   fontStyle="italic"
                 >
-                  {user?.ChucVu} {user?.ChucDanh}
+                  {user?.payload?.ChucVu} {user?.payload?.ChucDanh}
                 </Typography>
               </Box>
               <ModeSwitch />

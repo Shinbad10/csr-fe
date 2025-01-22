@@ -4,6 +4,7 @@ export const apiUrl = {
         login:'/auth/login',
         refresh:'/auth/refresh'
     },
+    campaigns:'/campaigns',
     employees:'/employees',
     medicines:'/medicines',
     functions:'/functions',

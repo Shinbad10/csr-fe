@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import type { Metadata } from "next";
-import TableEmployee from "../../../components/DataTable/Tables/EmployeeTable";
+import CampaignsTable from "../../../components/DataTable/Tables/CampaignsTable";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 export const metadata: Metadata = {
@@ -21,7 +21,9 @@ export default function Campaign() {
       }}
     >
       <Card sx={{ boxShadow: 3, minHeight: "80vh" }}>
-        <CardContent>{/* <TableEmployee /> */}</CardContent>
+        <CardContent>
+          <CampaignsTable />
+        </CardContent>
       </Card>
     </Box>
   );
